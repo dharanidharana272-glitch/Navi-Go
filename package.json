@@ -1,0 +1,14 @@
+{
+  "name": "navi-go-ai",
+  "version": "2.0.0",
+  "description": "Navi Go AI - destinations, live weather and international flights in English, Tamil, Hindi and Malayalam.",
+  "private": true,
+  "scripts": {
+    "start": "node server.js",
+    "check": "node tools/check.js",
+    "e2e": "node tools/e2e.js",
+    "build:data": "node tools/build_dataset.js",
+    "test": "npm run check && npm run e2e"
+  },
+  "devDependencies": { "jsdom": "^24.0.0" }
+}

@@ -1,0 +1,10 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Navi Go AI - Admin</title>
+<style>body{font:15px system-ui;max-width:900px;margin:24px auto;padding:0 16px}table{border-collapse:collapse;width:100%;margin:8px 0 24px}td,th{border:1px solid #ccc;padding:6px;text-align:left}button{cursor:pointer}</style></head><body>
+<h1>Admin</h1><p id="msg">Loading…</p><div id="out"></div>
+<script>
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+async function load(){const r=await fetch("/api/admin/stats",{credentials:"same-origin"});if(r.status!==200){msg.textContent="Admin login required. Sign in as the admin on the main app first.";return}
+const j=await r.json();msg.textContent=`${j.users} users · ${j.trips} trips · ${j.reviews} reviews · ${j.favorites} saved places`;
+out.innerHTML="<h2>Recent users</h2><table><tr><th>ID</th><th>Name</th><th>Email</th><th>Role</th></tr>"+j.recentUsers.map(u=>`<tr><td>${esc(u.uid)}</td><td>${esc(u.name)}</td><td>${esc(u.email)}</td><td>${esc(u.role)}</td></tr>`).join("")+"</table><h2>Recent reviews</h2><table><tr><th>Place</th><th>★</th><th>Text</th><th></th></tr>"+j.recentReviews.map(v=>`<tr><td>${esc(v.dest.split("|")[0])}</td><td>${v.rating}</td><td>${esc(v.body)}</td><td><button data-id="${v.id}">Delete</button></td></tr>`).join("")+"</table>"}
+out.onclick=async e=>{const id=e.target.dataset.id;if(!id)return;await fetch("/api/admin/delete-review",{method:"POST",credentials:"same-origin",headers:{"Content-Type":"application/json","X-Requested-With":"navigo"},body:JSON.stringify({id})});load()};load();
+</script></body></html>
